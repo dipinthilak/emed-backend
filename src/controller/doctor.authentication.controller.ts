@@ -1,8 +1,8 @@
 import { Request, Response } from "express";
 import jwt, { JwtPayload } from "jsonwebtoken";
 import { sendMail } from "../helper/nodeMailer";
-import { createAccessToken } from "../util/jwt";
-import { Doctor } from "../models/doctorScema";
+import { createAccessToken } from "../helper/jwt";
+// import { Doctor } from "../models/doctorShcema";
 import { comparePassword, hashPassword } from "../helper/hashPassword";
 
 export const doctorSignup = async (req: Request, res: Response) => {

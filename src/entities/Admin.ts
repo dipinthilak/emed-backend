@@ -1,7 +1,8 @@
 export class Adminentity {
-    public  password?: string;
+    public readonly name?: string;
     public readonly email?: string;
-
+    public readonly phoneNo?: string;
+    public  password?: string;
 
     constructor (obj: any){        
         Object.assign(this, obj)

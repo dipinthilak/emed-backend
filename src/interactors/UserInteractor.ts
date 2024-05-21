@@ -4,7 +4,7 @@ import { IUserRepository } from "../interfaces/iUserRepository";
 import { INTERFACE_TYPE } from "../utils";
 import { comparePassword, hashPassword } from "../helper/hashPassword";
 import { createAccessToken } from "../helper/jwt";
-import { createRefreshToken } from "../util/jwt";
+import { createRefreshToken } from "../helper/jwt";
 import { login } from "../controller/doctor.authentication.controller";
 import { sendMail } from "../helper/nodeMailer";
 
@@ -61,12 +61,18 @@ export class UserInteractor implements IUserInteractor {
 
 
     async verifyUser(input: any) {
-        console.log("----------@verify -----interactor", input);
-        const { otpValue } = input;
-        if (otpValue === otpValue) {
-            return { status: true, message: "user account verified", verification: true };
+        try {
+            console.log("----------@verify -----interactor", input);
+            const { otpValue } = input;
+            if (otpValue === otpValue) {
+                return { status: true, message: "user account verified", verification: true };
+            }
+            return { status: true, message: "user account not verified verified", verification: false };
+    
+
+        } catch (error) {
+            console.error(error);
         }
-        return { status: true, message: "user account not verified verified", verification: false };
 
 
     }
@@ -104,8 +110,7 @@ export class UserInteractor implements IUserInteractor {
 
 
     signoutUser(input: any) {
-        return this.repository.signout(input)
-
+        return this.repository.signout(input);
     }
 
 }

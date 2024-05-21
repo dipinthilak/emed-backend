@@ -27,3 +27,4 @@ router.post('/google-login', (req, res) => { console.log("post request came") })
 router.post('/reset-password', (req, res) => { console.log("patch request came") });
 
 export default router;
+ 

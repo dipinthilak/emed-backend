@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 // import {Admin} from "../models/adminSchema";
 import { comparePassword } from "../helper/hashPassword"
-import { clearAccessTokenFromCookie, createAccessToken, createRefreshToken } from "../util/jwt";
+import { clearAccessTokenFromCookie, createAccessToken, createRefreshToken } from "../helper/jwt";
 
 
 export const adminLogin = async (req: Request, res: Response) => {

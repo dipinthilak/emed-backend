@@ -30,23 +30,26 @@ const doctorSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    password: {
-        type: String,
-        required: true
-    },
     gender: {
         type: String,
     },
     dob: {
         type: Date,
     },
+    password: {
+        type: String,
+        required: true
+    },
     verified:{
         type:Boolean
     },
     isActive: {
         type: Boolean,
+    }, 
+    isGoogle: {
+        type: Boolean,
     },    
 })
 
-const Doctor = mongoose.model('Doctor',doctorSchema)
-export {Doctor};
+const Doctordb = mongoose.model('Doctor',doctorSchema)
+export {Doctordb};

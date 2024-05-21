@@ -87,7 +87,7 @@ export class UserController {
         try {
             res.clearCookie("userAccessToken");
             res.clearCookie("userRefreshToken");
-            res.status(200).json({ status: true });
+            return res.status(200).json({status:true,message:"user signed-out succesfully"});
 
         } catch (error) {
             next(error)

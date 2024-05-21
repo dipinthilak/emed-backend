@@ -7,7 +7,7 @@ import cookieParser from "cookie-parser";
 import session, { MemoryStore, SessionOptions } from "express-session";
 
 import userRouter from "./router/userRoutes"
-import doctorRouter from "./router/doctor.routers"
+import doctorRouter from "./router/doctorRoutes"
 import adminrRouter from "./router/adminRoutes"
 
 dotenv.config({ path: "src/.env" });
@@ -60,7 +60,7 @@ app.use(
       httpOnly: true,
     },
     store: store,
-  } as SessionOptions)
+  } as SessionOptions) 
 );
 
 
