@@ -1,0 +1,12 @@
+@HOST=http://127.0.0.1:3000/api
+
+
+###User Login
+
+
+POST {{HOST}}/user/login
+content-type: application/json
+{
+    "email": "use@mail.com",
+    "password": "fdkldf"
+}
