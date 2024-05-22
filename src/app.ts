@@ -35,6 +35,7 @@ declare module "express-session" {
       password: string,
     };
     user?: {
+      _id: string;
       fullName: string;
       email: string;
       address: string;

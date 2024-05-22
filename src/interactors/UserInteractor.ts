@@ -46,7 +46,7 @@ export class UserInteractor implements IUserInteractor {
             if (user) {
                 const otp = await sendMail(email, fullName);
                 if (otp) {
-                    return { data: { status: true, message: "user created verify otp" }, otp };
+                    return { data: { status: true, message: "user created verify otp" }, otp ,user};
                 }
             }
 

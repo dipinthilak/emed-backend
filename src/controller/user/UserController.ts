@@ -22,9 +22,11 @@ export class UserController {
         try {
 
             const body = req.body.formData;
-            const { data, otp } = await this.interactor.signupUser(body);
+            const { data, otp,user } = await this.interactor.signupUser(body);
+           console.log(user,"saved ----------user data-");
+           
             req.session.otp = otp;
-            req.session.user = data;
+            req.session.user = user;
             return res.status(200).json(data);
 
         } catch (error) {
@@ -34,7 +36,7 @@ export class UserController {
 
     async onVerifyUser(req: Request, res: Response, next: NextFunction) {
         try {
-            const body = { ...req.body, sessionOtp: req.session.otp };
+            const body = { ...req.body, sessionOtp: req.session.otp ,_id:req.session.user};
             const data = await this.interactor.verifyUser(body);
             console.log("data from interactor ", data);
             if (req.session) {

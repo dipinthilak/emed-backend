@@ -46,14 +46,11 @@ export class AdminController {
         try {
             res.clearCookie("userAccessToken");
             res.clearCookie("userRefreshToken");
-            res.status(200).json({ status: true });
+            return res.status(200).json({ status: true,messgae:"admin signout succesfully " });
         } catch (error) {
             next(error);
         }
     }
-
-
-
 
     async onfetchUsers(req:Request,res:Response,next:NextFunction)
     {

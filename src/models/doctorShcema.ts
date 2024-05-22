@@ -40,7 +40,12 @@ const doctorSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    otpverified:{
+        default:false,
+        type:Boolean
+    },
     verified:{
+        default:false,
         type:Boolean
     },
     isActive: {
