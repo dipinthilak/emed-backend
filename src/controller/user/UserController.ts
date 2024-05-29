@@ -98,4 +98,50 @@ export class UserController {
     }
 
 
+    async onSignupGoogle(req: Request, res: Response, next: NextFunction) {
+        try {
+          const { body } = req;
+          console.log("request body------------------>  ", body);
+    
+          const response = await this.interactor.signUpGoogle(body);
+    
+          console.log("request body------------------>  ", response);
+          return res.status(200).json({ status: true, message: "datas received at backend" });
+        } catch (error) {
+          next(error);
+        }
+      }
+    
+    
+    
+      async onSigninGoogle(req: Request, res: Response, next: NextFunction) {
+        try {
+          const { body } = req;
+          console.log("request body------------------>  ", body);
+          const doctorId = body.googleId;
+          const response = await this.interactor.signInGoogle(doctorId);
+          if (response.status) {
+            res.cookie("userAccessToken", response.accessToken, {
+              maxAge: 60000,
+              httpOnly: true,
+              secure: true,
+              sameSite: "strict"
+            });
+            res.cookie("userRefreshToken", response.refreshToken, {
+              maxAge: 3600000,
+              httpOnly: true,
+              secure: true,
+              sameSite: "strict",
+            });
+          }
+    
+          console.log("RESPONSE body------------------>  ", response);
+          return res.status(200).json(response);
+        } catch (error) {
+          next(error);
+        }
+      }
+    
+
+
 }

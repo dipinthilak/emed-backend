@@ -18,21 +18,28 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 
+
 const store = new MemoryStore();
 
 declare module "express-session" {
   interface Session {
-    doctorData?:{
-      fullName:string,
-      email:string,
-      registerNo:string,
-      department:string,
-      address:string,
-      pincode:string,
-      phoneNo:string,
-      gender:string,
-      dob:Date,
+    doctorData?: {
+      _id:string,
+      fullName: string,
+      googleId: string,
+      email: string,
+      registerNo: string,
+      department: string,
+      address: string,
+      pincode: string,
+      phoneNo: string,
+      gender: string,
+      dob: Date,
       password: string,
+      verified: Boolean,
+      isVerified: Boolean,
+      isActive: Boolean,
+      isGoogle: Boolean,
     };
     user?: {
       _id: string;
@@ -61,7 +68,7 @@ app.use(
       httpOnly: true,
     },
     store: store,
-  } as SessionOptions) 
+  } as SessionOptions)
 );
 
 
@@ -75,6 +82,6 @@ app.use(logger('tiny'));
 
 app.use('/api/user', userRouter);
 app.use('/api/doctor', doctorRouter);
-app.use('/api/admin',adminrRouter);
+app.use('/api/admin', adminrRouter);
 
 export { app };

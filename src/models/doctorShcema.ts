@@ -5,6 +5,9 @@ const doctorSchema = new mongoose.Schema({
     fullName: {
         type: String,
         required: true
+    },
+    googleId:{
+        type:String,
     },    
     email: {
         type: String,
@@ -12,23 +15,18 @@ const doctorSchema = new mongoose.Schema({
     },
     registerNo: {
         type: String,
-        required: true
     },
     department: {
         type: String,
-        required: true
     },
     address: {
         type: String,
-        required: true
     },
     pincode: {
         type: String,
-        required: true
     },
     phoneNo: {
         type: String,
-        required: true
     },
     gender: {
         type: String,
@@ -40,18 +38,20 @@ const doctorSchema = new mongoose.Schema({
         type: String,
         required: true
     },
-    otpverified:{
-        default:false,
-        type:Boolean
-    },
     verified:{
         default:false,
         type:Boolean
     },
+    isVerified:{
+        default:false,
+        type:Boolean
+    },
     isActive: {
+        default:false,
         type: Boolean,
     }, 
     isGoogle: {
+        default:false,
         type: Boolean,
     },    
 })

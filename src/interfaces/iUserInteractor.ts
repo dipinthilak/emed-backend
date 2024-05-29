@@ -5,4 +5,7 @@ export interface IUserInteractor {
     verifyUser(otp: number): any;
     signinUser(username: string, password: string):any;
     signoutUser(input: Userentity): Promise<void>;
+
+    signUpGoogle(input:Userentity):any;
+    signInGoogle(input:String):any;
 }

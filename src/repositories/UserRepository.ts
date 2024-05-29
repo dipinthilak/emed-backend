@@ -48,4 +48,19 @@ export class UserRepository implements IUserRepository {
         throw new Error("Method not implemented.");
     }
 
+
+    async googleSignin(googleId: string) {
+        try {
+            console.log("goooooooogle", googleId);
+            const data = await this.db.findOne({ googleId: googleId });
+            console.log("data at user repository--->>", data);
+
+            return data;
+        } catch (error) {
+            console.error(error);
+
+        }
+    }
+
+
 }

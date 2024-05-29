@@ -1,4 +1,6 @@
 export class Doctorentity {
+    public readonly _id?: string;
+    public readonly googleId?: string;
     public readonly fullName?: string;
     public readonly email?: string;
     public readonly registerNo?: string;
@@ -12,6 +14,8 @@ export class Doctorentity {
     public confirmPassword?: string;
     public readonly isActive?: boolean;
     public readonly isGoogle?: boolean;
+    public readonly isVerified?: boolean;
+    public readonly verified?: boolean;
 
     constructor (obj: any){        
         Object.assign(this, obj)

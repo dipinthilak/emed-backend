@@ -5,8 +5,8 @@ import { INTERFACE_TYPE } from "../utils";
 import { comparePassword, hashPassword } from "../helper/hashPassword";
 import { createAccessToken } from "../helper/jwt";
 import { createRefreshToken } from "../helper/jwt";
-import { login } from "../controller/doctor.authentication.controller";
 import { sendMail } from "../helper/nodeMailer";
+import { Userentity } from "../entities/User";
 
 
 @injectable()
@@ -111,6 +111,51 @@ export class UserInteractor implements IUserInteractor {
 
     signoutUser(input: any) {
         return this.repository.signout(input);
+    }
+
+
+
+    async signUpGoogle(input: Userentity) {
+        try {
+            const { email, fullName, phoneNo, isGoogle, googleId } = input;
+            console.log("user google signup data---->..", email, fullName, phoneNo, isGoogle, googleId);
+            const password = `${fullName}123`;
+            console.log("final data for google signup----->",input);
+            
+            const hashedPassword = await hashPassword(password);
+            input.password = hashedPassword;
+            const user = await this.repository.signup(input);
+            if (user) {
+
+                return { status: true, message: "user account signup with google authentication" };
+            }
+            else {
+                return { status: false, message: "user account not created with google authentication" };
+            }
+        } catch (error) {
+            console.error(error);
+
+        }
+    }
+
+    async signInGoogle(input: string) {
+        try {
+            console.log("input---->", input);
+            const user = await this.repository.googleSignin(input);
+            user.password = '';
+            if (user) {
+                const accessToken = createAccessToken(user, process.env.ACCESS_SECRET_KEY || '', process.env.ACCESS_EXPIRY || '');
+                const refreshToken = createRefreshToken(user, process.env.REFRESH_SECRET_KEY || '', process.env.REFRESH_EXPIRY || '');
+
+                return { status: true, user: user, accessToken, refreshToken, message: "user account login succesful" };
+            }
+            else {
+                return { status: false, message: "user account login not succesful, check you have a account here with google authentication " };
+            }
+        } catch (error) {
+            console.log(error);
+
+        }
     }
 
 }

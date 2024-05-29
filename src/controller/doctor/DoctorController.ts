@@ -18,7 +18,6 @@ export class DoctorController {
       const { data, otp, doctor } = await this.interactor.signUpDoctor(body);
       req.session.otp = otp;
       req.session.user = doctor;
-
       return res.status(200).json(data);
     } catch (error) {
       next(error);
@@ -43,30 +42,33 @@ export class DoctorController {
 
   async onSigninDoctor(req: Request, res: Response, next: NextFunction) {
     try {
-        const username = req.body.formData.email;
-        const password = req.body.formData.password;
-        console.log("request body data------------",req.body);
-        
-        const response = await this.interactor.signInDoctor(username, password);
-        console.log("response data from interactor---->",response);
-        
-        if (response.status) {
-            res.cookie("doctorAccessToken", response.accessToken, {
-                maxAge: 60000,
-                httpOnly: true,
-                secure: true,
-                sameSite: "strict"
-            });
-            res.cookie("doctorRefreshToken", response.refreshToken, {
-                maxAge: 3600000,
-                httpOnly: true,
-                secure: true,
-                sameSite: "strict",
-            });
+      const username = req.body.formData.email;
+      const password = req.body.formData.password;
+      console.log("request body data------------", req.body);
 
-      return res.status(200).json(response);
-    }
- } catch (error) {
+      const response = await this.interactor.signInDoctor(username, password);
+      console.log("response data from interactor---->", response);
+
+      if (response.status) {
+        res.cookie("doctorAccessToken", response.accessToken, {
+          maxAge: 60000,
+          httpOnly: true,
+          secure: true,
+          sameSite: "strict"
+        });
+        res.cookie("doctorRefreshToken", response.refreshToken, {
+          maxAge: 3600000,
+          httpOnly: true,
+          secure: true,
+          sameSite: "strict",
+        });
+
+        return res.status(200).json(response);
+      }else{
+        return res.status(200).json(response);
+      }
+
+    } catch (error) {
       next(error);
     }
   }
@@ -82,4 +84,109 @@ export class DoctorController {
       next(error);
     }
   }
+
+
+
+  async onSignupGoogle(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { body } = req;
+      console.log("request body------------------>  ", body);
+
+      const response = await this.interactor.signUpGoogle(body);
+
+      console.log("request body------------------>  ", response);
+      return res.status(200).json({ status: true, message: "datas received at backend" });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+
+
+  async onSigninGoogle(req: Request, res: Response, next: NextFunction) {
+    try {
+      const { body } = req;
+      console.log("request body------------------>  ", body);
+      const doctorId = body.googleId;
+      const response = await this.interactor.signInGoogle(doctorId);
+      if (response.status) {
+        res.cookie("doctorAccessToken", response.accessToken, {
+          maxAge: 60000,
+          httpOnly: true,
+          secure: true,
+          sameSite: "strict"
+        });
+        res.cookie("doctorRefreshToken", response.refreshToken, {
+          maxAge: 3600000,
+          httpOnly: true,
+          secure: true,
+          sameSite: "strict",
+        });
+      }
+
+      console.log("RESPONSE body------------------>  ", response);
+      return res.status(200).json(response);
+    } catch (error) {
+      next(error);
+    }
+  }
+
+
+
+  async onForgotPassword(req: Request, res: Response, next: NextFunction){
+    try {
+      const { body } = req;
+      console.log("request body------------------>  ", body);
+      const { data,otp, doctor } = await this.interactor.forgotPassword(body);
+      console.log("response at controller---",data,"   otp",otp,"doctor",doctor._id);
+      if(data.status)
+        {
+          req.session.otp = otp;
+          req.session.doctorData = doctor;
+          console.log("session data addedd--->",req.session.otp,req.session.doctorData,"here we check again------->>");
+          
+          return res.status(200).json(data);
+        }
+        else{
+          return res.status(200).json(data);
+        }
+    } catch (error) {
+      console.error(error);
+      return res.status(400).json({status:false,message:"error occured!"});
+    }
+  }
+
+
+
+ async  onVerifyOtp(req: Request, res: Response, next: NextFunction)
+  {
+    try {
+      const doctorId = req.session.doctorData?._id;
+      const doctorPassword = req.session.doctorData?.password;
+      console.log(req.body,"req object--------->");
+      
+
+      const body = {
+        ...req.body,
+        sessionOtp: req.session.otp,
+        doctorId: doctorId,
+        doctorPassword:doctorPassword,
+      };
+
+      console.log("data at verify forgot password otp----->",body);
+      
+      const data = await this.interactor.verifyForgotDoctor(body);
+      return res.status(200).json(data);
+
+      
+    } catch (error) {
+      console.error(error);
+      return res.status(400).json({status:false,message:"error occured!"});      
+    }
+
+  }
+
+
+
+
 }

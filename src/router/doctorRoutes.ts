@@ -22,7 +22,13 @@ router.use(express.json());
 router.post('/signup', controller.onSignupDoctor.bind(controller));
 router.post('/login', controller.onSigninDoctor.bind(controller));
 router.post('/verify-otp', controller.onVerifyDoctor.bind(controller));
-router.get('/logout', controller.onSignoutDoctor.bind(controller));
+router.post('/verify-forgototp', controller.onVerifyOtp.bind(controller));
 
+
+router.get('/logout', controller.onSignoutDoctor.bind(controller));
+router.post('/forgot-password', controller.onForgotPassword.bind(controller));
+
+router.post('/google-signup', controller.onSignupGoogle.bind(controller));
+router.post('/google-login', controller.onSigninGoogle.bind(controller));
 
 export default router;

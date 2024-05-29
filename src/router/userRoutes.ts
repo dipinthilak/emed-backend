@@ -23,8 +23,8 @@ router.post('/login', controller.onSigninUser.bind(controller));
 router.post('/verify-otp', controller.onVerifyUser.bind(controller));
 router.get('/logout', controller.onSignoutUser.bind(controller));
 
-router.post('/google-login', (req, res) => { console.log("post request came") });
-router.post('/reset-password', (req, res) => { console.log("patch request came") });
+router.post('/google-signup', controller.onSignupGoogle.bind(controller));
+router.post('/google-login', controller.onSigninGoogle.bind(controller));
 
 export default router;
  

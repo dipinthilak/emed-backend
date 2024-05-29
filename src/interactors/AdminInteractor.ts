@@ -4,6 +4,7 @@ import { IAdminRepository } from "../interfaces/IAdminRepository";
 import { INTERFACE_TYPE } from "../utils/appConst";
 import { comparePassword } from "../helper/hashPassword";
 import { createAccessToken, createRefreshToken } from "../helper/jwt";
+import { Userentity } from "../entities/User";
 
 @injectable()
 export class AdminInteractor implements IAdminInteractor {
@@ -15,6 +16,7 @@ export class AdminInteractor implements IAdminInteractor {
     ) {
         this.repository = repository;
     }
+
 
     async signinAdmin(username: string, password: string) {
         try {
@@ -43,12 +45,108 @@ export class AdminInteractor implements IAdminInteractor {
     }
 
 
-   async  usersData(input: any) {
+    async usersData(): Promise<any> {
         try {
-            const users =await this.repository.usersData(input);
-            
+            const users = await this.repository.usersData();
+            return { status: true, users };
         } catch (error) {
-            
+            console.error(error);
         }
     }
+
+
+    async userStatusChange(input: string) {
+        try {
+            const user = await this.repository.userData(input);
+            const status = !user?.isActive;
+            const userId: any = user?._id;
+            const resultq = await this.repository.updateUser(userId, status);
+            const result = await this.repository.userData(input);
+            if (result) {
+                result.password = '';
+                return { status: true, user: result }
+            }
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
+    async doctorsData(input: boolean): Promise<any> {
+        try {
+
+            const doctors = await this.repository.doctorsData(input);
+            return { status: true, doctors };
+        } catch (error) {
+
+        }
+    }
+
+
+    async doctorStatusChange(input: string) {
+        try {
+            const doctor = await this.repository.doctorData(input);
+            const status = !doctor?.isActive;
+            const doctorId: any = doctor?._id;
+            const resultq = await this.repository.updateDoctor(doctorId, status);
+            const result = await this.repository.doctorData(input);
+            if (result) {
+                result.password = '';
+                return { status: true, doctor: result }
+            }
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
+
+
+    async departmentData() {
+        try {
+            const departments = await this.repository.departmentsData();
+            if (departments) {
+                return { status: true, departments: departments, message: "deparment data fetched succesfully" };
+            } else {
+                return { status: false, message: "deparment data not fetched " };
+            }
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
+
+    async addDepartment(input: any) {
+        try {
+            const department = await this.repository.newDepartment(input);
+            if (department) {
+                return { status: true, department: department, message: "new department added" };
+            } else {
+                return { status: false, message: "new department not created " };
+            }
+            return department;
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+    async doctorVerify(input: string) {
+        try {
+            console.log("input at doc verify interactor", input);
+            const doctor = await this.repository.verifyDoctor(input)
+            if (doctor) {
+                return { status: true, doctor, message: "doctor verified" }
+            }
+            else {
+                return { status: false, doctor, message: "doctor not verified succesfully " }
+            }
+
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
+
+
+
+
+
 }
