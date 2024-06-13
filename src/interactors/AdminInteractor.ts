@@ -45,10 +45,16 @@ export class AdminInteractor implements IAdminInteractor {
     }
 
 
-    async usersData(): Promise<any> {
+    async usersData(pageNo: number): Promise<any> {
         try {
-            const users = await this.repository.usersData();
-            return { status: true, users };
+            const pageSize = 5;
+            const userCount = await this.repository.usersCount();
+            const totalPages = Math.ceil(userCount / pageSize);
+            const skip = pageSize * (pageNo - 1);
+            const limit = pageSize * pageNo;
+            console.log("uses count is -->", userCount, "no of pages-->", totalPages, "skip-->", skip, "limit-->", limit);
+            const users = await this.repository.usersData({}, skip, pageSize);
+            return { status: true, users, totalPages };
         } catch (error) {
             console.error(error);
         }
@@ -71,11 +77,22 @@ export class AdminInteractor implements IAdminInteractor {
         }
     }
 
-    async doctorsData(input: boolean): Promise<any> {
+
+
+
+
+
+    async doctorsData(input: boolean, pageNo: number): Promise<any> {
         try {
 
-            const doctors = await this.repository.doctorsData(input);
-            return { status: true, doctors };
+            const pageSize = 5;
+            const userCount = await this.repository.doctorsCount(input);
+            const totalPages = Math.ceil(userCount / pageSize);
+            const skip = pageSize * (pageNo - 1);
+            const limit = pageSize * pageNo;
+            console.log("uses count is -->", userCount, "no of pages-->", totalPages, "skip-->", skip, "limit-->", limit);
+            const doctors = await this.repository.doctorsData(input,skip,pageSize);
+            return { status: true, doctors,totalPages};
         } catch (error) {
 
         }
@@ -96,37 +113,8 @@ export class AdminInteractor implements IAdminInteractor {
         } catch (error) {
             console.error(error);
         }
-    }
+    };
 
-
-
-    async departmentData() {
-        try {
-            const departments = await this.repository.departmentsData();
-            if (departments) {
-                return { status: true, departments: departments, message: "deparment data fetched succesfully" };
-            } else {
-                return { status: false, message: "deparment data not fetched " };
-            }
-        } catch (error) {
-            console.error(error);
-        }
-    }
-
-
-    async addDepartment(input: any) {
-        try {
-            const department = await this.repository.newDepartment(input);
-            if (department) {
-                return { status: true, department: department, message: "new department added" };
-            } else {
-                return { status: false, message: "new department not created " };
-            }
-            return department;
-        } catch (error) {
-            console.log(error);
-        }
-    }
 
     async doctorVerify(input: string) {
         try {
@@ -147,6 +135,80 @@ export class AdminInteractor implements IAdminInteractor {
 
 
 
+
+
+
+
+    departmentData() {
+        try {
+
+        } catch (error) {
+
+        }
+    }
+
+
+
+    async departmentsData() {
+        try {
+            const departments = await this.repository.departmentsData();
+            console.log("department datas-----", departments);
+
+            if (departments) {
+                return { status: true, departments: departments, message: "deparment data fetched succesfully" };
+            } else {
+                return { status: false, message: "deparment data not fetched " };
+            }
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
+
+    async addDepartment(input: any) {
+        try {
+            console.log("input data-----", input);
+            const { name } = input;
+            console.log(name, "<----------  name of department");
+
+            const data = await this.repository.departmentData(name);
+            console.log("data at interactor", data);
+
+            if (!data) {
+                const department = await this.repository.newDepartment(input);
+                if (department) {
+                    return { status: true, department: department, message: "new department added" };
+                } else {
+                    return { status: false, message: "new department not created " };
+                }
+                return department;
+            }
+            else {
+                return { status: false, message: "department already exist!" }
+            }
+
+        } catch (error) {
+            console.log(error);
+        }
+    }
+
+
+    async departmentStatusChange(input: string) {
+        try {
+            const department = await this.repository.departmentData(input);
+            console.log("department data----",department);
+            
+            const status = !department.isActive;
+            const departmentId: any = department._id;
+            const resultq = await this.repository.updateDepartment(departmentId, status);
+            const result = await this.repository.departmentData(input);
+            if (result) {
+                return { status: true, department: department, message: "department status changed succesfully" }
+            }
+        } catch (error) {
+            console.error(error);
+        }
+    }
 
 
 }

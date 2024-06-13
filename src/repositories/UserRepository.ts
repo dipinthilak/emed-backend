@@ -10,6 +10,7 @@ export class UserRepository implements IUserRepository {
     constructor() {
         this.db = Userdb;
     }
+ 
 
     async signup(data: Userentity) {
         try {
@@ -59,6 +60,30 @@ export class UserRepository implements IUserRepository {
         } catch (error) {
             console.error(error);
 
+        }
+    }
+
+
+    async findUser(email: string) {
+        try {
+            const user=this.db.findOne({email:email});
+            return user;
+        } catch (error) {
+            console.error(error);
+
+        }
+    }
+
+
+   async updatePassword(id: string, password: string) {
+        try {
+            const userId = id;
+            console.log("data at user repo -return---verify--before---->", userId,"-------------", id,"----------",password);
+            const user = await this.db.findByIdAndUpdate(userId, { password: password }, { new: true });
+            console.log("data at user repo -return---verify--afterr---->", user);
+            return user;
+        } catch (error) {
+            console.log(error);
         }
     }
 

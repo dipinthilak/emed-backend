@@ -40,9 +40,20 @@ export class AdminRepository implements IAdminRepository {
     }
 
 
-    async usersData() {
+    async usersCount() {
         try {
-            const data = await this.userDb.find({}, { _id: 1, fullName: 1, email: 1, address: 1, phoneNo: 1, gender: 1, isActive: 1 });
+            const data = await this.userDb.find({}).count();
+            return data;
+        } catch (error) {
+            console.log(error);
+
+        }
+    }
+    
+
+    async usersData(filter:{},skip:number,limit:number) {
+        try {
+            const data = await this.userDb.find(filter, { _id: 1, fullName: 1, email: 1, address: 1, phoneNo: 1, gender: 1, isActive: 1 }).sort({}).skip(skip).limit(limit);
             return data;
         } catch (error) {
             console.log(error);
@@ -67,9 +78,24 @@ export class AdminRepository implements IAdminRepository {
         return data;
     }
 
+    async doctorsCount(input: boolean) {
+        try {
+            let filterQuery: any = { isVerified: false };
+            if (input) {
+                filterQuery = { isVerified: true };
+            }
+            console.log("fril", filterQuery);
+            const data = await this.Doctordb.find(filterQuery).count();
+            return data;
+        } catch (error) {
+            console.log(error);
+
+        }
+    }
 
 
-    async doctorsData(input: boolean) {
+
+    async doctorsData(input: boolean,skip:number,limit:number) {
         try {
             let filterQuery: any = { isVerified: false };
             if (input) {
@@ -77,7 +103,7 @@ export class AdminRepository implements IAdminRepository {
             }
             console.log("fril", filterQuery);
 
-            const data = await this.Doctordb.find(filterQuery, { _id: 1, fullName: 1, email: 1, registerNo: 1, department: 1, address: 1, phoneNo: 1, gender: 1, isActive: 1 });
+            const data = await this.Doctordb.find(filterQuery, { _id: 1, fullName: 1, email: 1, registerNo: 1, department: 1, address: 1, phoneNo: 1, gender: 1, isActive: 1 }).sort({}).skip(skip).limit(limit);;
             // console.log(data);
             return data;
         } catch (error) {
@@ -123,13 +149,18 @@ export class AdminRepository implements IAdminRepository {
 
         }
     }
-    departmentData(input: string): Promise<Departmententity> {
-        throw new Error("Method not implemented.");
+   async departmentData(input: string) {
+        try {
+            console.log("name--123123--",input);
+            
+            const data = await this.departmentDb.findOne({name:input});
+            console.log("data------>",data);
+            
+            return data;            
+        } catch (error) {
+            console.log(error);
+        }
     }
-
-
-
-
     async newDepartment(input: any) {
         try {
             const department = await this.departmentDb.create(input);
@@ -140,8 +171,9 @@ export class AdminRepository implements IAdminRepository {
 
     }
 
-    updateDepartment(departmentId: string, status: boolean): Promise<Departmententity | null> {
-        throw new Error("Method not implemented.");
+    async updateDepartment(departmentId: string, status: boolean) {
+        const data = await this.departmentDb.findByIdAndUpdate(departmentId, { isActive: status });
+        return data;
     }
 
 }

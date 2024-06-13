@@ -5,10 +5,10 @@ const userSchema = new mongoose.Schema({
 
     fullName: {
         type: String,
-    }, 
-    googleId:{
-        type:String,
-    },   
+    },
+    googleId: {
+        type: String,
+    },
     email: {
         type: String,
     },
@@ -31,14 +31,18 @@ const userSchema = new mongoose.Schema({
         type: Date,
     },
     isGoogle: {
-        default:false,
+        default: false,
         type: Boolean,
-    },   
+    },
     isActive: {
-        default:true,
+        default: true,
         type: Boolean,
-    },    
-})
+    },
 
-const Userdb = mongoose.model('User',userSchema)
-export {Userdb};
+},
+    {
+        timestamps: true,
+    })
+
+const Userdb = mongoose.model('User', userSchema)
+export { Userdb };

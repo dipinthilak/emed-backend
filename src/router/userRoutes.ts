@@ -22,6 +22,10 @@ router.post('/signup', controller.onSignupUser.bind(controller));
 router.post('/login', controller.onSigninUser.bind(controller));
 router.post('/verify-otp', controller.onVerifyUser.bind(controller));
 router.get('/logout', controller.onSignoutUser.bind(controller));
+router.post('/forgot-password', controller.onForgotPassword.bind(controller));
+router.post('/verify-forgototp', controller.onVerifyOtp.bind(controller));
+
+
 
 router.post('/google-signup', controller.onSignupGoogle.bind(controller));
 router.post('/google-login', controller.onSigninGoogle.bind(controller));

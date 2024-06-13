@@ -32,8 +32,8 @@ export class DoctorInteractor implements IDoctorInteractor {
             delete input.confirmPassword;
             const doctor = await this.repository.signup(input);
             if (doctor) {
-                // const otp = 100000;
-                const otp = await sendMail(email, fullName);
+                const otp = 100000;
+                // const otp = await sendMail(email, fullName);
                 console.log("doctor signup otp---->",otp);
                 
                 if (otp) {

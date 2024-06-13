@@ -12,9 +12,15 @@ export class DoctorController {
     this.interactor = interactor;
   }
 
+
+
+
   async onSignupDoctor(req: Request, res: Response, next: NextFunction) {
     try {
+      console.log("form data at sign up controller---->",req.body);
+      // console.log("form data at sign up controller---->",req?.files);
       const body = req.body.formData;
+      
       const { data, otp, doctor } = await this.interactor.signUpDoctor(body);
       req.session.otp = otp;
       req.session.user = doctor;
@@ -23,6 +29,9 @@ export class DoctorController {
       next(error);
     }
   }
+
+
+
 
   async onVerifyDoctor(req: Request, res: Response, next: NextFunction) {
     try {

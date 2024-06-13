@@ -28,7 +28,6 @@ export class UserController {
             req.session.otp = otp;
             req.session.user = user;
             return res.status(200).json(data);
-
         } catch (error) {
             next(error)
         }
@@ -140,6 +139,59 @@ export class UserController {
         } catch (error) {
           next(error);
         }
+      }
+
+      async onForgotPassword(req: Request, res: Response, next: NextFunction){
+        try {
+          const { body } = req;
+          console.log("request body------------------>  ", body);
+          const { data,otp, user } = await this.interactor.forgotPassword(body);
+          console.log("response at controller---",data,"   otp",otp,"user",user._id);
+          if(data.status)
+            {
+              req.session.otp = otp;
+              req.session.user = user;
+              console.log("session data addedd--->",req.session.otp,req.session.user,"here we check again------->>");
+              
+              return res.status(200).json(data);
+            }
+            else{
+              return res.status(200).json(data);
+            }
+        } catch (error) {
+          console.error(error);
+          return res.status(400).json({status:false,message:"error occured!"});
+        }
+      }
+
+      async  onVerifyOtp(req: Request, res: Response, next: NextFunction)
+      {
+        try {
+          const userId = req.session.user?._id;
+          const userPassword = req.session.user?.password;
+          console.log(req.body,"req object--------->",userId,userPassword,"checking----");
+          
+    
+          const body = {
+            ...req.body,
+            sessionOtp: req.session.otp,
+            userId: userId,
+            userPassword:userPassword,
+          };
+    
+          console.log("data at verify forgot password otp----->",body);
+          
+          const data = await this.interactor.verifyForgotUser(body);
+          console.log("data at verify forgot password otp----->",data);
+
+          return res.status(200).json(data);
+    
+          
+        } catch (error) {
+          console.error(error);
+          return res.status(400).json({status:false,message:"error occured!"});      
+        }
+    
       }
     
 

@@ -7,33 +7,33 @@ interface CustomRequest extends Request {
   user?: Adminentity;
 }
 
-export const verifyUser = (
+export const verifyAdmin = (
   req: CustomRequest,
   res: Response,
   next: NextFunction
 ) => {
 
-  const userAccessToken = req.cookies.accessToken;
-  const userRefreshToken = req.cookies.refreshToken;
+  const adminAccessToken = req.cookies.accessToken;
+  const adminRefreshToken = req.cookies.refreshToken;
 
-  if (!userRefreshToken) {
+  if (!adminRefreshToken) {
     return res
       .status(401)
       .json({ status: false, message: "invalid refresh token" });
   }
 
   jwt.verify(
-    userAccessToken,
+    adminAccessToken,
     process.env.ACCESS_SECRET_KEY || "",
     (err: jwt.VerifyErrors | null, decoded: any) => {
       if (err) {
         if (
           (err.name === "TokenExpiredError" ||
             err.name === "JsonWebTokenError") &&
-          userRefreshToken
+          adminRefreshToken
         ) {
           jwt.verify(
-            userRefreshToken,
+            adminRefreshToken,
             process.env.ACCESS_SECRET_KEY || "",
             (errRefresh: jwt.VerifyErrors | null, decodedRefresh: any) => {
               if (errRefresh) {

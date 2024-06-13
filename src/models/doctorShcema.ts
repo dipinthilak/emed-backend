@@ -8,10 +8,12 @@ const doctorSchema = new mongoose.Schema({
     },
     googleId:{
         type:String,
+        default:null,
     },    
     email: {
         type: String,
-        required: true
+        required: true,
+        unique:true,
     },
     registerNo: {
         type: String,
@@ -47,14 +49,18 @@ const doctorSchema = new mongoose.Schema({
         type:Boolean
     },
     isActive: {
-        default:false,
+        default:true,
         type: Boolean,
     }, 
     isGoogle: {
         default:false,
         type: Boolean,
     },    
-})
+},
+{
+    timestamps: true,
+}
+)
 
 const Doctordb = mongoose.model('Doctor',doctorSchema)
 export {Doctordb};

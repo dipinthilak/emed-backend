@@ -20,7 +20,6 @@ export class UserInteractor implements IUserInteractor {
         @inject(INTERFACE_TYPE.UserRepository) repository: IUserRepository
     ) {
         this.repository = repository;
-
     }
 
 
@@ -28,7 +27,6 @@ export class UserInteractor implements IUserInteractor {
     async signupUser(input: any) {
         try {
             console.log("----------@interactor", input);
-
             const { fullName, email, address, phoneNo, gender, password, dob, confirmPassword } = input;
 
             if (!fullName || !gender || !dob || !email || !address || !phoneNo || !password || !confirmPassword || password !== confirmPassword) {
@@ -42,22 +40,18 @@ export class UserInteractor implements IUserInteractor {
 
 
             const user = await this.repository.signup(input);
-
             if (user) {
                 const otp = await sendMail(email, fullName);
                 if (otp) {
-                    return { data: { status: true, message: "user created verify otp" }, otp ,user};
+                    return { data: { status: true, message: "user created verify otp" }, otp, user };
                 }
             }
 
         } catch (error) {
             console.error('ERR: UserInteractor --> signUp()', error);
             throw error;
-
         }
-
     }
-
 
 
     async verifyUser(input: any) {
@@ -68,13 +62,11 @@ export class UserInteractor implements IUserInteractor {
                 return { status: true, message: "user account verified", verification: true };
             }
             return { status: true, message: "user account not verified verified", verification: false };
-    
+
 
         } catch (error) {
             console.error(error);
         }
-
-
     }
 
 
@@ -120,8 +112,8 @@ export class UserInteractor implements IUserInteractor {
             const { email, fullName, phoneNo, isGoogle, googleId } = input;
             console.log("user google signup data---->..", email, fullName, phoneNo, isGoogle, googleId);
             const password = `${fullName}123`;
-            console.log("final data for google signup----->",input);
-            
+            console.log("final data for google signup----->", input);
+
             const hashedPassword = await hashPassword(password);
             input.password = hashedPassword;
             const user = await this.repository.signup(input);
@@ -155,6 +147,49 @@ export class UserInteractor implements IUserInteractor {
         } catch (error) {
             console.log(error);
 
+        }
+    }
+
+
+    async forgotPassword(input: any) {
+        try {
+            const { email, password } = input;
+            console.log("data at interactor---->", email, password);
+            const user = await this.repository.findUser(email);
+            if (user && user.email) {
+                const otp = await sendMail(email, user.email);
+                console.log("otp--->", otp);
+                if (otp) {
+                    const hashedPassword= await hashPassword(password);
+                    
+                    user.password=hashedPassword;
+                    console.log("hashed pass and doc-->",hashedPassword,"-----",user);
+                    return { data: { status: true,user:user._id, message: "otp send to email for account password reset! " }, otp, user }
+                }
+            }
+            else {
+                return { data: { status: false, message: "no account exist with this email id" }, otp:null, doctor:null }
+            }
+        } catch (error) {
+            console.error(error);
+
+        }
+    }
+
+
+    async verifyForgotUser(input: any) {
+        try {
+
+            const { otp, sessionOtp, userId,userPassword } = input;
+            console.log("dataaaaaaaaa---->>>>",otp, "----------",sessionOtp,"----------", userId,"----------",userPassword);
+            
+            if (otp == sessionOtp) {
+                const data = await this.repository.updatePassword(userId,userPassword);
+                return { status: true, message: "user account password updated", updation: true };
+            }
+            return { status: false, message: "user account password not updated", updation: false };
+        } catch (error) {
+            console.error(error);
         }
     }
 

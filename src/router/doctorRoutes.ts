@@ -6,6 +6,7 @@ import { DoctorInteractor } from '../interactors/DoctorInteractor';
 import { DoctorController } from '../controller/doctor/DoctorController';
 import { IDoctorInteractor } from '../interfaces/IDoctorInteractor';
 import { IDoctorRepository } from '../interfaces/IDoctorRepository';
+// import upload from '../helper/multer'/
 
 const container = new Container();
 

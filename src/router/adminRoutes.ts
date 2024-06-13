@@ -9,6 +9,7 @@ import { AdminController } from '../controller/admin/AdminController';
 
 
 
+
 const container = new Container();
 
 container.bind<IAdminRepository>(INTERFACE_TYPE.AdminRepository).to(AdminRepository);
@@ -22,17 +23,23 @@ const router = express.Router();
 router.post('/login', controller.onSigninAdmin.bind(controller));
 router.get('/logout', controller.onSignoutAdmin.bind(controller));
 
-router.get('/users', controller.onfetchUsers.bind(controller));
+
+router.get('/users/:pageNo', controller.onfetchUsers.bind(controller));
 router.patch('/change-user-status/:userId', controller.onUserStatusChange.bind(controller));
 
+
 router.get('/doctors', controller.onfetchDoctors.bind(controller));
+router.patch('/change-doctor-status/:doctorId', controller.onDoctorStatusChange.bind(controller));
 
 router.patch('/doctor-verification/:doctorId', controller.onDoctorsVerification.bind(controller));
 
-router.patch('/change-doctor-status/:doctorId', controller.onDoctorStatusChange.bind(controller));
+
+
+
 
 router.get('/departments', controller.onfetchDepartment.bind(controller));
 router.post('/addDepartments', controller.onAddDepartment.bind(controller));
+router.patch('/change-department-status/:departmentId', controller.onDepartmentStatusChange.bind(controller));
 
 // router.post('cloudSignature',controller.onGetSignature.bind(controller));
 export default router;

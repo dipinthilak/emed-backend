@@ -73,24 +73,37 @@ export class AdminController {
         }
     }
 
+
+
+
     async onSignoutAdmin(req: Request, res: Response, next: NextFunction) {
         try {
-            res.clearCookie("userAccessToken");
-            res.clearCookie("userRefreshToken");
+            res.clearCookie("adminAccessToken");
+            res.clearCookie("adminRefreshToken");
             return res.status(200).json({ status: true, messgae: "admin signout succesfully " });
         } catch (error) {
             next(error);
         }
     }
 
+
+
+
     async onfetchUsers(req: Request, res: Response, next: NextFunction) {
         try {
-            const { status, users } = await this.interactor.usersData();
-            return res.status(200).json({ status, users })
+            const pageNo:any=req.params.pageNo;
+            const { status, users,totalPages } = await this.interactor.usersData(pageNo);
+            const userPaging={totalPages,pageNo:1};
+            console.log("--",userPaging);
+            return res.status(200).json({ status, users,userPaging })
         } catch (error) {
             next(error);
         }
     }
+
+
+
+
 
     async onUserStatusChange(req: Request, res: Response, next: NextFunction) {
         try {
@@ -107,12 +120,15 @@ export class AdminController {
     async onfetchDoctors(req: Request, res: Response, next: NextFunction) {
         try {
             let data: boolean = false;
-            console.log("fhsdhf", req.query.verified, "fhsdhf");
+            const pageNo:any=req.query.pageNo;
+            console.log("fhsdhf",req.query,"pageno...........");
             if (req.query.verified == 'true') {
                 data = true;
             }
-            const { status, doctors } = await this.interactor.doctorsData(data);
-            return res.status(200).json({ status, doctors })
+            const { status, doctors,totalPages } = await this.interactor.doctorsData(data,pageNo);
+            const userPaging={totalPages,pageNo:1};
+            console.log("--",userPaging);
+            return res.status(200).json({ status, doctors,userPaging})
         } catch (error) {
             next(error);
         }
@@ -146,11 +162,14 @@ export class AdminController {
     }
 
 
+
+
+
     async onfetchDepartment(req: Request, res: Response, next: NextFunction) {
         try {
             console.log("request arrived at controller----->");
 
-            const response = await this.interactor.departmentData();
+            const response = await this.interactor.departmentsData();
             console.log("response data at controller--->>", response);
 
             return res.status(200).json(response)
@@ -172,6 +191,22 @@ export class AdminController {
         } catch (error) {
             console.error(error);
 
+        }
+    }
+    
+
+
+    async onDepartmentStatusChange(req: Request, res: Response, next: NextFunction) {
+        try {
+            const { departmentId } = req.params;
+            console.log("department+iud---",departmentId);
+            
+            const { status, department } = await this.interactor.departmentStatusChange(departmentId);
+            console.log(department, "---------------", status);
+            return res.status(200).json({ status: true, department, message: "department status changed" });
+        } catch (error) {
+            console.error(error);
+            next(error);
         }
     }
 

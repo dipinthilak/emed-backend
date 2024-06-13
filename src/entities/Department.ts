@@ -1,4 +1,5 @@
 export class Departmententity {
+    public readonly _id?: string;
     public readonly name?: string;
     public readonly about?: string;
     public readonly image?: string;
