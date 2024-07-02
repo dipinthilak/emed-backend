@@ -13,8 +13,8 @@ export const verifyAdmin = (
   next: NextFunction
 ) => {
 
-  const adminAccessToken = req.cookies.accessToken;
-  const adminRefreshToken = req.cookies.refreshToken;
+  const adminAccessToken = req.cookies.adminAccessToken;
+  const adminRefreshToken = req.cookies.adminRefreshToken;
 
   if (!adminRefreshToken) {
     return res
@@ -48,8 +48,8 @@ export const verifyAdmin = (
                 process.env.ACCESS_SECRET_KEY || "",
                 "15m"
               );
-              res.cookie("accessToken", newAccessToken, {
-                maxAge: 300000,
+              res.cookie("adminAccessToken", newAccessToken, {
+                maxAge: 14400000,
                 httpOnly: true,
                 secure: true,
                 sameSite: "strict",

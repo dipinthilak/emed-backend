@@ -132,6 +132,8 @@ export class AdminRepository implements IAdminRepository {
 
     async verifyDoctor(doctorId: string): Promise<Doctorentity | null> {
         const data = await this.Doctordb.findByIdAndUpdate(doctorId, { isVerified: true });
+        console.log("doctor verified",doctorId);
+        
         return data;
     }
 

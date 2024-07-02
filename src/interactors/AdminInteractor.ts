@@ -134,21 +134,6 @@ export class AdminInteractor implements IAdminInteractor {
 
 
 
-
-
-
-
-
-    departmentData() {
-        try {
-
-        } catch (error) {
-
-        }
-    }
-
-
-
     async departmentsData() {
         try {
             const departments = await this.repository.departmentsData();

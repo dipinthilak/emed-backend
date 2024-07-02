@@ -6,8 +6,10 @@ export interface IUserRepository {
     signin(username: string, password: string): Promise<Userentity>;
     signout(data: Userentity): Promise<void>;
     googleSignin(googleId: string): Promise<Userentity>;
-
     findUser(email:string):Promise<Userentity>;
-    updatePassword(id: string,password:string):any;
+    updatePassword(id: String,password:string):any;
+    userData(data:String):Promise<Userentity>
+
+    UpdateUser(id:String,data:any):any;
 
 }

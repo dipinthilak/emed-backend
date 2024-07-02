@@ -1,5 +1,5 @@
 import jwt from "jsonwebtoken";
-import { Response } from "express"; 
+import { Response } from "express";
 import { Userentity } from "../entities/User";
 
 export const createAccessToken = (
@@ -21,7 +21,10 @@ export const createRefreshToken = (
   refreshTokenSecretKey: string,
   expiration: string
 ) => {
-  return jwt.sign({ user }, refreshTokenSecretKey, { expiresIn: expiration });
+  const token= jwt.sign({ user }, refreshTokenSecretKey, { 
+    expiresIn: expiration, 
+  });
+  return token;
 };
 
 

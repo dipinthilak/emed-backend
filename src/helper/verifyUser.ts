@@ -13,8 +13,8 @@ export const verifyUser = (
   next: NextFunction
 ) => {
 
-  const userAccessToken = req.cookies.accessToken;
-  const userRefreshToken = req.cookies.refreshToken;
+  const userAccessToken = req.cookies.userAccessToken;
+  const userRefreshToken = req.cookies.userRefreshToken;
 
   if (!userRefreshToken) {
     return res
@@ -34,7 +34,7 @@ export const verifyUser = (
         ) {
           jwt.verify(
             userRefreshToken,
-            process.env.ACCESS_SECRET_KEY || "",
+            process.env.REFRESH_SECRET_KEY || "",
             (errRefresh: jwt.VerifyErrors | null, decodedRefresh: any) => {
               if (errRefresh) {
                 return res
@@ -48,8 +48,8 @@ export const verifyUser = (
                 process.env.ACCESS_SECRET_KEY || "",
                 "15m"
               );
-              res.cookie("accessToken", newAccessToken, {
-                maxAge: 300000,
+              res.cookie("userAccessToken", newAccessToken, {
+                maxAge: 10000,
                 httpOnly: true,
                 secure: true,
                 sameSite: "strict",

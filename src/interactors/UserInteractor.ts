@@ -24,6 +24,40 @@ export class UserInteractor implements IUserInteractor {
 
 
 
+
+    async onUserUpdate(id:String,data:any) {
+        try {
+            const user=await this.repository.UpdateUser(id,data);
+            if(user)
+                {
+                    delete user.password;
+                    return {status:true,message:"user data updated",user};
+                }
+                return {status:false,message:"user data not updated"};
+        } catch (error) {
+            console.log(error);
+        }
+    }
+    
+    
+    async onUserdata(input: String) {
+        try {
+            const user=await this.repository.userData(input);            
+            if(user)
+                {
+                    delete user.password;
+                    return {status:true,message:"user data fetched",user};
+                }
+                return {status:false,message:"user data not fetched"};
+            
+        } catch (error) {
+            console.error(error);
+            return { status: false, message: "An error occurred while fetching user data" }; 
+        }
+    }
+
+
+
     async signupUser(input: any) {
         try {
             console.log("----------@interactor", input);
@@ -85,7 +119,9 @@ export class UserInteractor implements IUserInteractor {
             }
 
             if (!validPass) {
-                return { status: false, message: 'Password is incorrect!' };
+                console.log("incorrect password !");
+                
+                return { status: false, message: 'Incorrect Password!' };
             }
 
             delete user.password;

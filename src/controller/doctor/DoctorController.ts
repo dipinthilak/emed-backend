@@ -17,16 +17,20 @@ export class DoctorController {
 
   async onSignupDoctor(req: Request, res: Response, next: NextFunction) {
     try {
-      console.log("form data at sign up controller---->",req.body);
-      // console.log("form data at sign up controller---->",req?.files);
       const body = req.body.formData;
-      
+      console.log("request body data------------", body);
+
       const { data, otp, doctor } = await this.interactor.signUpDoctor(body);
-      req.session.otp = otp;
-      req.session.user = doctor;
+      if(data.status){
+        req.session.otp = otp;
+        req.session.user = doctor;
+      }
+      console.log("no controll over here-------");
+      
       return res.status(200).json(data);
     } catch (error) {
-      next(error);
+      console.error("error at doctor controller --",error);
+      next(error)
     }
   }
 
@@ -81,6 +85,8 @@ export class DoctorController {
       next(error);
     }
   }
+
+
 
   async onSignoutDoctor(req: Request, res: Response, next: NextFunction) {
     try {

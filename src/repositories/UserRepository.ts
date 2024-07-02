@@ -10,12 +10,27 @@ export class UserRepository implements IUserRepository {
     constructor() {
         this.db = Userdb;
     }
- 
+
+
+
+
+    async UpdateUser(id: String, data: any) {
+        try {
+            console.log("user data after updated at repo", data);            
+            const user = await this.db.findByIdAndUpdate(id, data);
+            console.log("user data after updated at repo", user);
+            return user;
+        } catch (error) {
+            console.error(error);
+        }
+
+    }
+
 
     async signup(data: Userentity) {
         try {
-            console.log("user data @ repository-----------------",data);
-            
+            console.log("user data @ repository-----------------", data);
+
             const user = await this.db.create({ ...data });
             return user;
         } catch (error) {
@@ -24,7 +39,7 @@ export class UserRepository implements IUserRepository {
     }
 
 
-    
+
     verify(data: number): Promise<Userentity> {
         throw new Error("Method not implemented.");
     }
@@ -37,7 +52,7 @@ export class UserRepository implements IUserRepository {
             return data;
         } catch (error) {
             console.error(error);
-            
+
 
         }
     }
@@ -66,7 +81,7 @@ export class UserRepository implements IUserRepository {
 
     async findUser(email: string) {
         try {
-            const user=this.db.findOne({email:email});
+            const user = this.db.findOne({ email: email });
             return user;
         } catch (error) {
             console.error(error);
@@ -75,15 +90,26 @@ export class UserRepository implements IUserRepository {
     }
 
 
-   async updatePassword(id: string, password: string) {
+    async updatePassword(id: string, password: string) {
         try {
             const userId = id;
-            console.log("data at user repo -return---verify--before---->", userId,"-------------", id,"----------",password);
+            console.log("data at user repo -return---verify--before---->", userId, "-------------", id, "----------", password);
             const user = await this.db.findByIdAndUpdate(userId, { password: password }, { new: true });
             console.log("data at user repo -return---verify--afterr---->", user);
             return user;
         } catch (error) {
             console.log(error);
+        }
+    }
+
+    async userData(id: String) {
+        try {
+            const user = await this.db.findById(id, { password: 0, googleId: 0 });
+            console.log("user", user);
+            return user;
+        } catch (error) {
+            console.error(error);
+
         }
     }
 

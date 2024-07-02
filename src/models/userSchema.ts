@@ -1,5 +1,39 @@
 const mongoose = require("mongoose");
 
+const memberSchema = new mongoose.Schema({
+    fullName: {
+        type: String,
+        required: true
+    },
+    age: {
+        type: Number,
+        required: true
+    },
+    dob: {
+        type: Date,
+    },
+    gender: {
+        type: String,
+        required: true
+    },
+    relation: {
+        type: String,
+        required: true
+    },
+    bloodGroup: {
+        type: String,
+        required: true
+    },
+    weight: {
+        type: Number,
+        required: true
+    },
+    height: {
+        type: Number,
+        required: true
+    }
+});
+
 
 const userSchema = new mongoose.Schema({
 
@@ -38,6 +72,7 @@ const userSchema = new mongoose.Schema({
         default: true,
         type: Boolean,
     },
+    members: [memberSchema]
 
 },
     {

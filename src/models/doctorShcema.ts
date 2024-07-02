@@ -60,7 +60,7 @@ const doctorSchema = new mongoose.Schema({
 {
     timestamps: true,
 }
-)
+);
 
 const Doctordb = mongoose.model('Doctor',doctorSchema)
 export {Doctordb};

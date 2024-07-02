@@ -22,30 +22,36 @@ export class DoctorInteractor implements IDoctorInteractor {
 
     async signUpDoctor(input: Doctorentity) {
         try {
-            const { fullName, email, registerNo, department, address, pincode, phoneNo, gender, dob, password, confirmPassword } = input;
-
-            if (!fullName || !email || !registerNo || !department || !address || !pincode || !phoneNo || !gender || !dob || !password || !confirmPassword || password !== confirmPassword) {
-                return { status: false, message: "incomplete or incorrect form data" };
+            const { fullName, email, password, confirmPassword } = input;
+            if (!fullName || !email || !password || !confirmPassword || password !== confirmPassword) {
+                return { data: { status: false, message: "incomplete or incorrect form data" }, otp: null, doctor: null };
             }
+            const existDoctor=await this.repository.findDoctor(email);
+            if(existDoctor)
+                {
+                    throw "Doctor account already exist with this email !";
+                }
             const hashedPassword = await hashPassword(password);
             input.password = hashedPassword;
             delete input.confirmPassword;
             const doctor = await this.repository.signup(input);
             if (doctor) {
-                const otp = 100000;
-                // const otp = await sendMail(email, fullName);
-                console.log("doctor signup otp---->",otp);
-                
+                // const otp = 100000;
+                const otp = await sendMail(email, fullName || "User");
+                console.log("doctor signup otp---->", otp);
+
                 if (otp) {
                     return { data: { status: true, message: "complete signup with emailed otp" }, otp, doctor }
                 }
             }
 
-            return { data: { status: false, message: "doctor account not created " } };
+            return { data: { status: false, message: "Doctor account not created " } };
 
         }
         catch (error) {
-            console.error(error);
+            console.error(" Costom error from the try block ",error);
+            throw error;
+
         }
     };
 
@@ -74,15 +80,15 @@ export class DoctorInteractor implements IDoctorInteractor {
                 const otp = await sendMail(email, doctor.email);
                 console.log("otp--->", otp);
                 if (otp) {
-                    const hashedPassword= await hashPassword(password);
-                    
-                    doctor.password=hashedPassword;
-                    console.log("hashed pass and doc-->",hashedPassword,"-----",doctor);
-                    return { data: { status: true,doctor:doctor._id, message: "otp send to email for account password reset! " }, otp, doctor }
+                    const hashedPassword = await hashPassword(password);
+
+                    doctor.password = hashedPassword;
+                    console.log("hashed pass and doc-->", hashedPassword, "-----", doctor);
+                    return { data: { status: true, doctor: doctor._id, message: "otp send to email for account password reset! " }, otp, doctor }
                 }
             }
             else {
-                return { data: { status: false, message: "no account exist with this email id" }, otp:null, doctor:null }
+                return { data: { status: false, message: "no account exist with this email id" }, otp: null, doctor: null }
             }
         } catch (error) {
             console.error(error);
@@ -94,11 +100,11 @@ export class DoctorInteractor implements IDoctorInteractor {
     async verifyForgotDoctor(input: any) {
         try {
 
-            const { otp, sessionOtp, doctorId,doctorPassword } = input;
-            console.log("dataaaaaaaaa---->>>>",otp, "----------",sessionOtp,"----------", doctorId,"----------",doctorPassword);
-            
+            const { otp, sessionOtp, doctorId, doctorPassword } = input;
+            console.log("dataaaaaaaaa---->>>>", otp, "----------", sessionOtp, "----------", doctorId, "----------", doctorPassword);
+
             if (otp == sessionOtp) {
-                const data = await this.repository.updatePassword(doctorId,doctorPassword);
+                const data = await this.repository.updatePassword(doctorId, doctorPassword);
                 return { status: true, message: "doctor account password updated", updation: true };
             }
             return { status: false, message: "doctor account password not updated", updation: false };
@@ -147,9 +153,9 @@ export class DoctorInteractor implements IDoctorInteractor {
             const { email, fullName, phoneNo, isGoogle, googleId } = input;
             console.log("doctor google signup data---->..", email, fullName, phoneNo, isGoogle, googleId);
             const password = `${fullName}123`;
-            input={...input,verified:true};
-            console.log("final data for google signup----->",input);
-            
+            input = { ...input, verified: true };
+            console.log("final data for google signup----->", input);
+
             const hashedPassword = await hashPassword(password);
             input.password = hashedPassword;
             const doctor = await this.repository.signup(input);

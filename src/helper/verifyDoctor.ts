@@ -13,27 +13,27 @@ export const verifyUser = (
   next: NextFunction
 ) => {
 
-  const userAccessToken = req.cookies.accessToken;
-  const userRefreshToken = req.cookies.refreshToken;
+  const doctorAccessToken = req.cookies.doctorAccessToken;
+  const doctorRefreshToken = req.cookies.doctorRefreshToken;
 
-  if (!userRefreshToken) {
+  if (!doctorRefreshToken) {
     return res
       .status(401)
       .json({ status: false, message: "invalid refresh token" });
   }
 
   jwt.verify(
-    userAccessToken,
+    doctorAccessToken,
     process.env.ACCESS_SECRET_KEY || "",
     (err: jwt.VerifyErrors | null, decoded: any) => {
       if (err) {
         if (
           (err.name === "TokenExpiredError" ||
             err.name === "JsonWebTokenError") &&
-          userRefreshToken
+            doctorRefreshToken
         ) {
           jwt.verify(
-            userRefreshToken,
+            doctorRefreshToken,
             process.env.ACCESS_SECRET_KEY || "",
             (errRefresh: jwt.VerifyErrors | null, decodedRefresh: any) => {
               if (errRefresh) {
@@ -48,8 +48,8 @@ export const verifyUser = (
                 process.env.ACCESS_SECRET_KEY || "",
                 "15m"
               );
-              res.cookie("accessToken", newAccessToken, {
-                maxAge: 300000,
+              res.cookie("doctorAccessToken", newAccessToken, {
+                maxAge: 14400000,
                 httpOnly: true,
                 secure: true,
                 sameSite: "strict",
