@@ -4,7 +4,7 @@ import { Doctorentity } from "../entities/Doctor";
 import { Userentity } from "../entities/User";
 
 export interface IAdminRepository {
-    signin(username: string, password: string): Promise<Adminentity>;
+    signin(username: string): Promise<Adminentity>;
     signout(data: Adminentity): Promise<void>;
 
 

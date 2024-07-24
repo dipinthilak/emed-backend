@@ -6,9 +6,7 @@ import { AdminRepository } from '../repositories/AdminRepository';
 import { IAdminInteractor } from '../interfaces/IAdminInteractor';
 import { AdminInteractor } from '../interactors/AdminInteractor';
 import { AdminController } from '../controller/admin/AdminController';
-
-
-
+import { verifyAdmin } from '../helper/verifyAdmin';
 
 const container = new Container();
 
@@ -24,7 +22,7 @@ router.post('/login', controller.onSigninAdmin.bind(controller));
 router.get('/logout', controller.onSignoutAdmin.bind(controller));
 
 
-router.get('/users/:pageNo', controller.onfetchUsers.bind(controller));
+router.get('/users/:pageNo',verifyAdmin, controller.onfetchUsers.bind(controller));
 router.patch('/change-user-status/:userId', controller.onUserStatusChange.bind(controller));
 
 

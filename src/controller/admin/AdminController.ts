@@ -15,35 +15,6 @@ export class AdminController {
         this.interactor = interactor;
     }
 
-    //clodinary signature api
-    // async onGetSignature(req: Request, res: Response, next: NextFunction) {
-    //     try {
-    //         console.log("req data-->", req.body);
-    //         const { folder } = req.body;
-    //         const timestamp = Math.round(new Date().getTime() / 1000);
-    //         const cloudinaryApiSecret: any = process.env.CLOUDINARY_API_SECRET;
-
-    //         const signature = cloudinary.utils.api_sign_request
-    //         (
-    //             {
-    //                 timestamp,
-    //                 folder,
-    //             },
-    //             cloudinaryApiSecret
-    //         );
-    //         console.log("tstamp and signature------>", timestamp, signature);
-    //         res.status(200).json({ status: true, timestamp, signature });
-    //     } catch (error) {
-    //         console.error(error);
-    //         res.status(500).json({ status: false, message: " error occured while creating signature--" })
-    //     }
-    // }
-
-
-
-
-
-
 
     async onSigninAdmin(req: Request, res: Response, next: NextFunction) {
         try {

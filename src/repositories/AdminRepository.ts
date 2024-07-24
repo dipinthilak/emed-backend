@@ -24,7 +24,7 @@ export class AdminRepository implements IAdminRepository {
 
 
 
-    async signin(username: string, password: string) {
+    async signin(username: string) {
         try {
             const data = await this.db.findOne({ email: username }).lean();
             return data;
@@ -103,7 +103,7 @@ export class AdminRepository implements IAdminRepository {
             }
             console.log("fril", filterQuery);
 
-            const data = await this.Doctordb.find(filterQuery, { _id: 1, fullName: 1, email: 1, registerNo: 1, department: 1, address: 1, phoneNo: 1, gender: 1, isActive: 1 }).sort({}).skip(skip).limit(limit);;
+            const data = await this.Doctordb.find(filterQuery, {}).sort({}).skip(skip).limit(limit);;
             // console.log(data);
             return data;
         } catch (error) {

@@ -2,13 +2,18 @@ import { injectable } from "inversify";
 import { Doctorentity } from "../entities/Doctor";
 import { IDoctorRepository } from "../interfaces/IDoctorRepository";
 import { Doctordb } from "../models/doctorShcema";
+import { Departmentdb } from "../models/departmentSchema";
 
 @injectable()
 export class DoctorRepository implements IDoctorRepository {
     private db: typeof Doctordb;
+    departmentDb: typeof Departmentdb;
     constructor() {
         this.db = Doctordb;
+    this.departmentDb = Departmentdb;
+
     }
+
 
 
     async googleSignin(googleId: string) {
@@ -36,6 +41,30 @@ export class DoctorRepository implements IDoctorRepository {
         }
     }
 
+    async update(data: Doctorentity) {
+        try {
+            console.log("doctor data @ repository----------", data);
+            const {_id,}=data;
+            delete data._id;
+            const doctor = await this.db.findByIdAndUpdate(_id,{ ...data},{new:true});
+            return doctor;
+        } catch (error) {
+
+        }
+
+    }
+
+    async departmentsData() {
+        try {
+            const data = await this.departmentDb.find();
+            console.log("department datas as follows---->>>", data);
+            return data;
+        } catch (error) {
+            console.error(error);
+
+        }
+    }
+
 
     async verify(data: any) {
         try {
@@ -50,10 +79,10 @@ export class DoctorRepository implements IDoctorRepository {
     }
 
 
-    async updatePassword(id: string,password:string) {
+    async updatePassword(id: string, password: string) {
         try {
             const doctorId = id;
-            console.log("data at doctor repo -return---verify--before---->", doctorId,"-------------", id,"----------",password);
+            console.log("data at doctor repo -return---verify--before---->", doctorId, "-------------", id, "----------", password);
             const doctor = await this.db.findByIdAndUpdate(doctorId, { password: password }, { new: true });
             console.log("data at doctor repo -return---verify--afterr---->", doctor);
             return doctor;
@@ -63,7 +92,7 @@ export class DoctorRepository implements IDoctorRepository {
     }
 
 
-    async signin(username: string, password: string) {
+    async signin(username: string) {
         try {
             const data = await this.db.findOne({ email: username }).lean();
             return data;
@@ -74,7 +103,7 @@ export class DoctorRepository implements IDoctorRepository {
 
     async findDoctor(email: string) {
         try {
-            const doctor=this.db.findOne({email:email});
+            const doctor = this.db.findOne({ email: email });
             return doctor;
         } catch (error) {
             console.error(error);

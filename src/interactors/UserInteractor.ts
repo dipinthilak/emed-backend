@@ -72,7 +72,6 @@ export class UserInteractor implements IUserInteractor {
             delete input.confirmPassword;
             console.log("input afeter all manipulation", input, typeof input);
 
-
             const user = await this.repository.signup(input);
             if (user) {
                 const otp = await sendMail(email, fullName);
@@ -80,7 +79,6 @@ export class UserInteractor implements IUserInteractor {
                     return { data: { status: true, message: "user created verify otp" }, otp, user };
                 }
             }
-
         } catch (error) {
             console.error('ERR: UserInteractor --> signUp()', error);
             throw error;

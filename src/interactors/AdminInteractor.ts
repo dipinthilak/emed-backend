@@ -21,7 +21,7 @@ export class AdminInteractor implements IAdminInteractor {
     async signinAdmin(username: string, password: string) {
         try {
 
-            const admin = await this.repository.signin(username, password);
+            const admin = await this.repository.signin(username);
             if (!admin || !admin.password) {
                 return { status: false, message: "User not found" };
             }

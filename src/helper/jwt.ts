@@ -7,6 +7,8 @@ export const createAccessToken = (
   accessTokenSecretKey: string,
   expiration: string
 ) => {
+  console.log("admin entity valid or not ",user);
+  
   const token = jwt.sign({ user }, accessTokenSecretKey, {
     expiresIn: expiration,
   });

@@ -7,7 +7,7 @@ interface CustomRequest extends Request {
   user?: Adminentity;
 }
 
-export const verifyUser = (
+export const verifyDoctor = (
   req: CustomRequest,
   res: Response,
   next: NextFunction

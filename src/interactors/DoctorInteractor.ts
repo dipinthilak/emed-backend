@@ -26,18 +26,16 @@ export class DoctorInteractor implements IDoctorInteractor {
             if (!fullName || !email || !password || !confirmPassword || password !== confirmPassword) {
                 return { data: { status: false, message: "incomplete or incorrect form data" }, otp: null, doctor: null };
             }
-            const existDoctor=await this.repository.findDoctor(email);
-            if(existDoctor)
-                {
-                    throw "Doctor account already exist with this email !";
-                }
+            const existDoctor = await this.repository.findDoctor(email);
+            if (existDoctor) {
+                throw "Doctor account already exist with this email !";
+            }
             const hashedPassword = await hashPassword(password);
             input.password = hashedPassword;
             delete input.confirmPassword;
             const doctor = await this.repository.signup(input);
             if (doctor) {
-                // const otp = 100000;
-                const otp = await sendMail(email, fullName || "User");
+                const otp = await sendMail(email, fullName || "User") || 10000;
                 console.log("doctor signup otp---->", otp);
 
                 if (otp) {
@@ -49,8 +47,9 @@ export class DoctorInteractor implements IDoctorInteractor {
 
         }
         catch (error) {
-            console.error(" Costom error from the try block ",error);
-            throw error;
+            console.error(" Costom error from the try block ", error);
+            return { data: { status: false, message: "Error : Doctor account already exist with this email !" }, otp: null, doctor: null };
+
 
         }
     };
@@ -68,6 +67,35 @@ export class DoctorInteractor implements IDoctorInteractor {
             console.error(error);
         }
     }
+
+    async updateDoctor(input: Doctorentity) {
+        try {
+            console.log("partial data for doctor details updation --->", input);
+            const doctor = await this.repository.update(input);
+            console.log("doctor data --->",doctor);
+            if (doctor) {
+                return { status: true, message: "user data arrived at interactor" };
+            }
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
+    async departmentsData() {
+        try {
+            const departments = await this.repository.departmentsData();
+            console.log("department datas-----", departments);
+
+            if (departments) {
+                return { status: true, departments: departments, message: "deparment data fetched succesfully" };
+            } else {
+                return { status: false, message: "deparment data not fetched " };
+            }
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
 
 
 
@@ -116,7 +144,7 @@ export class DoctorInteractor implements IDoctorInteractor {
 
     async signInDoctor(username: string, password: string) {
         try {
-            const doctor = await this.repository.signin(username, password);
+            const doctor = await this.repository.signin(username);
             if (!doctor || !doctor.password) {
                 return { status: false, message: "user not found" }
             }
@@ -161,7 +189,7 @@ export class DoctorInteractor implements IDoctorInteractor {
             const doctor = await this.repository.signup(input);
             if (doctor) {
 
-                return { status: true, message: "doctor account signup with google authentication" };
+                return { data: { status: true, message: "doctor account signup with google authentication successful" }, doctor };
             }
             else {
                 return { status: false, message: "doctor account not created with google authentication" };

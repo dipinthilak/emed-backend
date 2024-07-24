@@ -21,16 +21,18 @@ export class DoctorController {
       console.log("request body data------------", body);
 
       const { data, otp, doctor } = await this.interactor.signUpDoctor(body);
+      console.log("data from interactor ",data,"--other",otp,doctor);
+      
       if(data.status){
         req.session.otp = otp;
-        req.session.user = doctor;
+        req.session.doctorData = doctor;
       }
       console.log("no controll over here-------");
       
       return res.status(200).json(data);
     } catch (error) {
       console.error("error at doctor controller --",error);
-      next(error)
+      return res.status(200).json({status:false,message:"response from the error-catch block of the doctor controller -"});
     }
   }
 
@@ -39,7 +41,7 @@ export class DoctorController {
 
   async onVerifyDoctor(req: Request, res: Response, next: NextFunction) {
     try {
-      const doctorId = req.session.user?._id;
+      const doctorId = req.session.doctorData?._id;
 
       const body = {
         ...req.body,
@@ -53,6 +55,28 @@ export class DoctorController {
     }
   }
 
+  async onUpdateDoctor(req:Request,res:Response,next:NextFunction){
+    try {
+      const doctorId = req.session.doctorData?._id;
+      const body={_id:doctorId,
+        ...req.body.formData       
+      };
+      const data=await this.interactor.updateDoctor(body);
+      return res.status(201).json(data);
+    } catch (error) {
+      return res.status(401).json({messsage:"error occcured while updating doctor profile , Try contacting Admin"})
+    }
+  }
+
+  async onDepartmentList(req:Request,res:Response,next:NextFunction){
+    try {
+      const data=await this.interactor.departmentsData();
+      return res.status(200).json(data);
+    } catch (error) {
+      return res.status(401).json({messsage:"error occcured while fetching department datas !"})
+    }
+  }
+ 
   async onSigninDoctor(req: Request, res: Response, next: NextFunction) {
     try {
       const username = req.body.formData.email;
@@ -107,10 +131,11 @@ export class DoctorController {
       const { body } = req;
       console.log("request body------------------>  ", body);
 
-      const response = await this.interactor.signUpGoogle(body);
+      const {data,doctor} = await this.interactor.signUpGoogle(body);
 
-      console.log("request body------------------>  ", response);
-      return res.status(200).json({ status: true, message: "datas received at backend" });
+      console.log("response body------------------>  ", data,doctor);
+      req.session.doctorData=doctor;
+      return res.status(200).json(data);
     } catch (error) {
       next(error);
     }
@@ -200,8 +225,5 @@ export class DoctorController {
     }
 
   }
-
-
-
 
 }

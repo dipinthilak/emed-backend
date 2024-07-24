@@ -6,6 +6,7 @@ import { DoctorInteractor } from '../interactors/DoctorInteractor';
 import { DoctorController } from '../controller/doctor/DoctorController';
 import { IDoctorInteractor } from '../interfaces/IDoctorInteractor';
 import { IDoctorRepository } from '../interfaces/IDoctorRepository';
+import { verifyDoctor } from '../helper/verifyDoctor';
 // import upload from '../helper/multer'/
 
 const container = new Container();
@@ -21,15 +22,17 @@ const router = express.Router();
 router.use(express.json());
 
 router.post('/signup', controller.onSignupDoctor.bind(controller));
-router.post('/login', controller.onSigninDoctor.bind(controller));
+router.patch('/signup', controller.onUpdateDoctor.bind(controller));
 router.post('/verify-otp', controller.onVerifyDoctor.bind(controller));
-router.post('/verify-forgototp', controller.onVerifyOtp.bind(controller));
+router.post('/login', controller.onSigninDoctor.bind(controller));
+router.get('/departmentlist', controller.onDepartmentList.bind(controller));
 
-
-router.get('/logout', controller.onSignoutDoctor.bind(controller));
 router.post('/forgot-password', controller.onForgotPassword.bind(controller));
+router.post('/verify-forgototp', controller.onVerifyOtp.bind(controller));
 
 router.post('/google-signup', controller.onSignupGoogle.bind(controller));
 router.post('/google-login', controller.onSigninGoogle.bind(controller));
+
+router.get('/logout', controller.onSignoutDoctor.bind(controller));
 
 export default router;
